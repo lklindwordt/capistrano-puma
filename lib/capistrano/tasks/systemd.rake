@@ -8,9 +8,8 @@ namespace :puma do
     task :config do
       on roles(fetch(:puma_role)) do |role|
         unit_filename = "#{fetch(:puma_service_unit_name)}.service"
-        git_plugin.template_puma "puma.service", "#{fetch(:tmp_dir)}/#{unit_filename}", role
-        sudo "mv #{fetch(:tmp_dir)}/#{unit_filename} #{fetch(:puma_systemd_conf_dir)}"	        systemd_path = fetch(:puma_systemd_conf_dir, git_plugin.fetch_systemd_unit_path)
-        sudo "#{fetch(:puma_systemctl_bin)} daemon-reload"	        if fetch(:puma_systemctl_user) == :system
+        git_plugin.template_puma "puma.service", "#{fetch(:tmp_dir)}/#{unit_filename}", role       
+        if fetch(:puma_systemctl_user) == :system
           sudo "mv #{fetch(:tmp_dir)}/#{unit_filename} #{systemd_path}"
           sudo "#{fetch(:puma_systemctl_bin)} daemon-reload"
         else
